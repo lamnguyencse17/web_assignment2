@@ -44,7 +44,8 @@ $query = $mysqli->prepare("insert into tch.account(email, password) values (?, ?
 $query->bind_param("ss", $email, $password);
 $message = $query->execute();
 $returnData = new stdClass();
-if ($message === 1){
+
+if ($message === true){
     http_response_code(201);
     $returnData->message = "Successfully registered";
     $returnData = json_encode((array)$returnData);
