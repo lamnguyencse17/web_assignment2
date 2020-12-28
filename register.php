@@ -32,12 +32,14 @@ function validateRegister($email, $password)
 }
 
 $email = $_POST["email"];
-$password = $_POST["password"];
+$password = $_POST["psswrd"];
 $errMsg = validateRegister($email, $password);
 if ($errMsg->email !== "" || $errMsg->password !== ""){
     $returnData = json_encode((array)$errMsg);
-    echo $returnData;
-    return;
+    echo "<script>
+    alert('$returnData');
+    window.location.href='register.html';
+    </script>";
 }
 $password=hashPassword($password);
 $query = $mysqli->prepare("insert into tch.account(email, password) values (?, ?)") ;
@@ -49,11 +51,19 @@ if ($message === true){
     http_response_code(201);
     $returnData->message = "Successfully registered";
     $returnData = json_encode((array)$returnData);
-    echo $returnData;
-    return;
+    // echo $returnData;
+    // return;
+    echo "<script>
+    alert('$returnData');
+    window.location.href='login.html';
+    </script>";
 }
 http_response_code(400);
 $returnData->message = "Email is duplicated";
 $returnData = json_encode((array)$returnData);
-echo $returnData;
-return;
+// echo $returnData;
+// return;
+echo "<script>
+    alert('$returnData');
+    window.location.href='register.html';
+    </script>";

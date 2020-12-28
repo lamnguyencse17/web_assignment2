@@ -32,12 +32,14 @@ function validateRegister($email, $password)
 }
 
 $email = $_POST["email"];
-$password = $_POST["password"];
+$password = $_POST["psswrd"];
 $errMsg = validateRegister($email, $password);
 if ($errMsg->email !== "" || $errMsg->password !== ""){
     $returnData = json_encode((array)$errMsg);
-    echo $returnData;
-    return;
+    echo "<script>
+    alert('$returnData');
+    window.location.href='login.html';
+    </script>";
 }
 $query = $mysqli->prepare("SELECT * FROM account WHERE email=?" );
 $query->bind_param("s",$email);
@@ -50,12 +52,23 @@ if(password_verify($password,$user->password)){
     http_response_code(200);
     $returnData->message = "Login successfully!";
     $returnData = json_encode((array)$returnData);
-    echo $returnData;
-    return;
+    // echo $returnData;
+    // return;
+    // echo "<script type='text/javascript'>alert('$returnData->message');</script>";
+    // header("Location: index.html");
+    echo "<script>
+    alert('$returnData');
+    window.location.href='index.html';
+    </script>";
 } else{
     http_response_code(400);
     $returnData->message = "Wrong email or password!";
     $returnData = json_encode((array)$returnData);
-    echo $returnData;
-    return;
+    // echo $returnData;
+    // return;
+    echo "<script>
+    alert('$returnData');
+    window.location.href='login.html';
+    </script>";
 }
+?>
