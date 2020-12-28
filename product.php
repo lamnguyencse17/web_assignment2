@@ -21,7 +21,7 @@
             let dict = localStorage.getItem("dict") ? JSON.parse(localStorage.getItem("dict")): [];
             if (dict.length > 0){
                 let isAvailable = false;
-                dict.forEach(function(item, i) { if (item.name === name) {
+                dict.forEach(function(item, i) { if (item.name == name) {
                     isAvailable = true;
                 } });
                 if (!isAvailable){
@@ -33,7 +33,7 @@
             localStorage.setItem("dict", JSON.stringify(dict));
             if (cart.length > 0){
                 let isChanged = false;
-                cart.forEach(function(item, i) { if (item[0] === id) {
+                cart.forEach(function(item, i) { if (item[0] == id) {
                     cart[i] = newItem;
                     isChanged = true;
                 } });
