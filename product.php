@@ -10,7 +10,7 @@
     <script type="text/javascript">
         jQuery(document).ready(function () {
             let textPrice = jQuery("#price").text()
-            const price = parseInt(textPrice.slice(0, textPrice.length-2))
+            const price = parseInt(textPrice.slice(0, textPrice.length-1))
             const name = jQuery("#name").text()
             jQuery("#purchase").click(function(){
             const quantity = parseInt(jQuery("#quantity").val());

@@ -15,11 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET'){
     $message = $query->execute();
     $res = $query->get_result();
     echo json_encode($res->fetch_all(MYSQLI_ASSOC));
+    return;
 }
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'CREATE'){
-    $accountID = intval($_SESSION['account_id']);
-    $items = json_decode($_POST['items']);
+$data[] = json_decode(file_get_contents('php://input'), true);
+$data = $data[0];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $data["type"] == 'CREATE'){
+//    $accountID = intval($_SESSION['account_id']);
+    $accountID = 1;
+    $items = $data['items'];
     //items: [[item_id, quantity]]
     $total = 0;
     $item_array = array();

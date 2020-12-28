@@ -25,6 +25,17 @@
                 });
                 localStorage.setItem("cart", JSON.stringify(cart))
             })
+            jQuery(document).on("click", "button", function() {
+                let items = JSON.parse(localStorage.getItem("cart"))
+                jQuery.ajax({
+                    url: `/web_assignment2/transaction.php`,
+                    method: "post",
+                    data: JSON.stringify({type: "CREATE", items: items}),
+                    success: function (data) {
+                    localStorage.clear();
+                    alert("THANH CONG")
+                    }
+            });});
             let cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")): [];
             let dict = localStorage.getItem("dict") ? JSON.parse(localStorage.getItem("dict")): [];
             if (cart.length === 0 && dict.length === 0) {
@@ -84,7 +95,7 @@
             <div>Quantity</div>
         </div>
         <div>
-            <input class="border border-black" type="submit" value="Mua">
+            <button class="border border-black">Mua</button>
         </div>
     </main>
       
