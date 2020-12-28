@@ -74,8 +74,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'UPDATE') {
     if ($password !== ""){
         $password=hashPassword($password);
     }
-    $query = $mysqli->prepare("UPDATE account SET email= CASE WHEN ? != '' THEN ? END, password= CASE WHEN ? != '' THEN ? END WHERE id= ?") ;
-    $query->bind_param('ssssi', $email, $email, $password, $password, $id);
+    if ($email !== "" && $password !== ""){
+        $query = $mysqli->prepare("UPDATE account SET email= ?, password= ? WHERE id= ?") ;
+        $query->bind_param('ssi', $email, $password, $id);
+    } elseif ($email !== ""){
+        $query = $mysqli->prepare("UPDATE account SET email= ? WHERE id= ?") ;
+        $query->bind_param('si', $email, $id);
+    } else {
+        $query = $mysqli->prepare("UPDATE account SET password= ? WHERE id= ?") ;
+        $query->bind_param('si', $password, $id);
+    }
     $query->execute();
     $isUpdated = $query->affected_rows;
     $returnData = new stdClass();
@@ -87,6 +95,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'UPDATE') {
         return;
     }
     $returnData->message = "Updated Successfully";
+    http_response_code(200);
+    $returnData = json_encode((array)$returnData);
+    echo $returnData;
+    return;
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'DELETE'){
+    $id = intval($_POST["id"]);
+    $errMsg = new stdClass();
+    if (!is_int($id) || $id < 0) {
+        $errMsg->message = "Invalid ID";
+        http_response_code(400);
+        $returnData = json_encode((array)$errMsg);
+        echo $returnData;
+        return;
+    }
+    $query = $mysqli->prepare("DELETE FROM account WHERE id=?");
+    $query->bind_param('i', $id);
+    $query->execute();
+    $isDeleted = $query->affected_rows;
+    $returnData = new stdClass();
+    if ($isDeleted === 0){
+        $returnData->message = "Nothing is deleted";
+        http_response_code(400);
+        $returnData = json_encode((array)$returnData);
+        echo $returnData;
+        return;
+    }
+    $returnData->message = "Deleted Successfully";
     http_response_code(200);
     $returnData = json_encode((array)$returnData);
     echo $returnData;
