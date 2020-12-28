@@ -1,3 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta HTTP-EQUIV="Content-language" CONTENT="vi">
+    <link rel="shortcut icon" href=\"https://theme.hstatic.net/1000075078/1000610097/14/favicon.png?v=620" type="image/png">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>The Coffee House</title>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            let textPrice = jQuery("#price").text()
+            const price = parseInt(textPrice.slice(0, textPrice.length-2))
+            const name = jQuery("#name").text()
+            jQuery("#purchase").click(function(){
+            const quantity = parseInt(jQuery("#quantity").val());
+            const url = new URL(window.location.href);
+            const id = parseInt(url.searchParams.get("id"));
+            const newItem = [id, quantity];
+            let cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")): [];
+            let dict = localStorage.getItem("dict") ? JSON.parse(localStorage.getItem("dict")): [];
+            if (dict.length > 0){
+                let isAvailable = false;
+                dict.forEach(function(item, i) { if (item.name === name) {
+                    isAvailable = true;
+                } });
+                if (!isAvailable){
+                    dict.push({name: name, price: price, id: id})
+                }
+            } else {
+                dict.push({name: name, price: price,  id: id})
+            }
+            localStorage.setItem("dict", JSON.stringify(dict));
+            if (cart.length > 0){
+                let isChanged = false;
+                cart.forEach(function(item, i) { if (item[0] === id) {
+                    cart[i] = newItem;
+                    isChanged = true;
+                } });
+                if (!isChanged){
+                    cart.push(newItem);
+                }
+            } else {
+                cart.push(newItem);
+            }
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert("Hoan Tat");
+        });
+        })
+    </script>
+</head>
 <?php
 
     $mysqli = new mysqli("localhost", "root", "", "TCH");
@@ -9,15 +60,7 @@
     }
 
 
-    echo "<!DOCTYPE html>
-    <html lang=\"en\">
-    <head>
-        <meta charset=\"UTF-8\">
-        <meta HTTP-EQUIV=\"Content-language\" CONTENT=\"vi\">
-        <link rel=\"shortcut icon\" href=\"https://theme.hstatic.net/1000075078/1000610097/14/favicon.png?v=620\" type=\"image/png\">
-        <link href=\"https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css\" rel=\"stylesheet\">
-        <title>The Coffee House</title>
-    </head>
+    echo "
     <body>
         <nav class=\"bg-black flex items-center justify-between flex-wrap p-6\">
             <div class=\"flex items-center flex-shrink-0 text-white mr-6\">
@@ -64,17 +107,16 @@
     $res = $res->fetch_object();
     $name= $res->name;
     $price = $res->price;
-    echo "<div class=\"font-bold text-lg sm:text-3xl mb-2 hover:text-orange-500 duration-300 h-32 duration-500\">".$name."&nbsp</div>"; echo "<p class=\"sm:text-3xl text-lg font-extrabold text-orange-500 mb-2\">".$price. "Đ</p>";
+    echo "<div id=\"name\" class=\"font-bold text-lg sm:text-3xl mb-2 hover:text-orange-500 duration-300 h-32 duration-500\">".$name."&nbsp</div>"; echo "<p id=\"price\" class=\"sm:text-3xl text-lg font-extrabold text-orange-500 mb-2\">".$price. "Đ</p>";
     // End Query
-    echo "<form action=\"\" method=\"POST\">
+    echo "
     <div class=\"row\">
         <a>Số lượng: &nbsp;</a>
-        <input class=\"border border-black\" type=\"number\" min=\"0\" value=\"1\" step=\"1\" id=\"quantity\" name=\"quantity\">
+        <input id=\"quantity\" class=\"border border-black\" type=\"number\" min=\"0\" value=\"1\" step=\"1\" id=\"quantity\" name=\"quantity\">
     </div>
     <div class=\"row\">
-        <input type=\"submit\" value=\"Mua ngay!\">
-    </div>
-</form>";
+        <button id=\"purchase\" class=\"border-black border\">Mua Ngay</button>
+    </div>";
 
 
 
@@ -163,6 +205,7 @@
 </div>
 </div>
 </footer>
+
 </body>
 </html>";
 

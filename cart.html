@@ -11,6 +11,35 @@
         }
       </style>
     <title>Shopping cart</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            let cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")): [];
+            let dict = localStorage.getItem("dict") ? JSON.parse(localStorage.getItem("dict")): [];
+            if (cart.length === 0 && dict.length === 0) {
+                alert("Hay Cho Gi Vao Gio Hang Nhe");
+                return;
+            }
+            if (cart.length !== dict.length){
+                alert("Co Loi Gio Hang");
+                localStorage.clear();
+                return;
+            }
+            cart.forEach(function(item){
+                const info = dict.find(function (element){
+                    if (element.id === item[0]){
+                        return element;
+                    }
+                })
+                jQuery("#cart").append(`<div>${info.name}</div>
+            <div>${info.price}</div>
+            <div>
+                <a>Số lượng: &nbsp;</a>
+                <input class="border border-black" type="number" min="0" value="${item[1]}" step="1" id="${item[0]}" name="quantity">
+            </div>`)
+            })
+        });
+    </script>
 </head>
 <body>
     <nav class="bg-black flex items-center justify-between flex-wrap p-6">
@@ -38,25 +67,14 @@
         </div>
     </nav>
     <main>
-        <div class="grid grid-cols-3 gap-4">
-            <div>Tra buoi</div>
-            <div>25000Đ</div>
-            <div>
-                <a>Số lượng: &nbsp;</a>
-                <input class="border border-black" type="number" min="0" value="1" step="1" id="quantity" name="quantity">
-            </div>
-            <div>Tra dao</div>
-            <div>25000Đ</div>
-            <div>
-                <a>Số lượng: &nbsp;</a>
-                <input class="border border-black" type="number" min="0" value="1" step="1" id="quantity" name="quantity">
-            </div>
-            <div></div>
-            <div></div>
-            <div>
-                <input class="border border-black" type="submit" value="Mua">
-            </div>
-          </div>  
+        <div class="grid grid-cols-3 gap-4" id="cart">
+            <div>Name</div>
+            <div>Price</div>
+            <div>Quantity</div>
+        </div>
+        <div>
+            <input class="border border-black" type="submit" value="Mua">
+        </div>
     </main>
       
       
