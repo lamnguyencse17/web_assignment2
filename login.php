@@ -46,6 +46,7 @@ $res = $query->get_result();
 $user = $res->fetch_object();
 $returnData = new stdClass();
 if(password_verify($password,$user->password)){
+    $_SESSION['account_id'] = $user->id;
     http_response_code(200);
     $returnData->message = "Login successfully!";
     $returnData = json_encode((array)$returnData);

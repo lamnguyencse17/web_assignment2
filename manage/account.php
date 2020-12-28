@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'DELETE'){
     $query->execute();
     $isDeleted = $query->affected_rows;
     $returnData = new stdClass();
-    if ($isDeleted === 0){
+    if ($isDeleted === 0) {
         $returnData->message = "Nothing is deleted";
         http_response_code(400);
         $returnData = json_encode((array)$returnData);
