@@ -34,10 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     echo $response;
     $query->close();
 }
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'CREATE'){
-    $name = $_POST["name"];
-    $price = intval($_POST["price"]);
+$data = json_decode(file_get_contents('php://input'), true);
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $data["type"] == 'CREATE'){
+    $name = $data["name"];
+    $price = intval($data["price"]);
     $errMsg = new stdClass();
     $errMsg = validateItem($name, $price);
     $query = $mysqli->prepare("insert into tch.item(name, price) values (?, ?)") ;
@@ -58,10 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'CREATE'){
     return;
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'UPDATE') {
-    $id = intval($_POST["id"]);
-    $name = $_POST["name"];
-    $price = intval($_POST["price"]);
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $data["type"] == 'UPDATE') {
+    $id = intval($data["id"]);
+    $name = $data["name"];
+    $price = intval($data["price"]);
     $errMsg = new stdClass();
     if (!is_int($id) || $id < 0) {
         $errMsg->message = "Invalid ID";
@@ -95,8 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'UPDATE') {
     return;
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'DELETE') {
-    $id = intval($_POST["id"]);
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $data["type"] == 'DELETE') {
+    $id = intval($data["id"]);
     $errMsg = new stdClass();
     if (!is_int($id) || $id < 0) {
         $errMsg->message = "Invalid ID";

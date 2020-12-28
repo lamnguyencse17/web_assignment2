@@ -41,22 +41,24 @@ if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: " . $mysqli->connect_error;
     exit();
 }
+
 if ($_SERVER['REQUEST_METHOD'] == 'GET'){
 $limit = intval($_GET['limit']);
 $offset = intval($_GET['offset']);
-$query = $mysqli->prepare("SELECT * FROM account LIMIT ? OFFSET ?");
+$query = $mysqli->prepare("SELECT id, email FROM account LIMIT ? OFFSET ?");
 $query->bind_param('ii', $limit, $offset);
 $query->execute();
 $result = $query->get_result();
 $response = json_encode($result->fetch_all(MYSQLI_ASSOC));
 echo $response;
 $query->close();
+return;
 }
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'UPDATE') {
-    $id = intval($_POST["id"]);
-    $email = $_POST["email"];
-    $password = $_POST["password"];
+$data = json_decode(file_get_contents('php://input'), true);
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $data["type"] == 'UPDATE') {
+    $id = intval($data["id"]);
+    $email = $data["email"];
+    $password = $data["password"];
     $errMsg = new stdClass();
     if (!is_int($id) || $id < 0) {
         $errMsg->message = "Invalid ID";
@@ -101,8 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'UPDATE') {
     return;
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST["type"] == 'DELETE'){
-    $id = intval($_POST["id"]);
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $data["type"] == 'DELETE'){
+    $id = intval($data["id"]);
     $errMsg = new stdClass();
     if (!is_int($id) || $id < 0) {
         $errMsg->message = "Invalid ID";

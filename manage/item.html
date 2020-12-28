@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta CONTENT="vi" HTTP-EQUIV="Content-language">
+    <link href="https://theme.hstatic.net/1000075078/1000610097/14/favicon.png?v=620" rel="shortcut icon"
+          type="image/png">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <title>Manage Item</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        const getItem = function (limit, offset) {
+            jQuery.ajax({
+                url: `/web_assignment2/manage/item.php?limit=${limit}&offset=${offset}`,
+                method: "get",
+                success: function (data) {
+                    const parsedData = JSON.parse(data);
+                    for (let item of parsedData) {
+                        jQuery(document.body).append(`<div class="grid grid-cols-5 container mx-auto content-center items-center">
+    <div class="col-span-1">${item.id}</div>
+    <div class="col-span-2">${item.name}</div>
+    <div class="col-span-1">${item.price}</div>
+    <div class="col-span-1"><button class="deleteButton shadow border border-black" type="button" data-id=${item.id} >Delete</button></div>
+</div>`);
+                    }
+                }
+            })
+        }
+        jQuery(document).ready(function () {
+            let limit = 10;
+            let offset = 0;
+            getItem(limit, offset);
+            jQuery(document).on('click', '.deleteButton', function(){
+                const id = jQuery(this).data('id');
+                jQuery.ajax(({url: "/web_assignment2/manage/item.php", contentType: "application/json", method: "post", data: JSON.stringify({type: "DELETE", id: id}), success: function (data){
+                        console.log(data);
+                        location.reload();
+                    }}))
+            })
+            jQuery('#item-update').on('submit', function(event) {
+                event.preventDefault();
+                event.stopPropagation()
+                const data = $('#item-update').serializeArray().reduce(function(obj, item) {
+                    obj[item.name] = item.value;
+                    return obj;
+                }, {})
+                jQuery.ajax(({url: "/web_assignment2/manage/item.php", method: "post", data: JSON.stringify(data), success: function (data){
+                        location.reload();
+                    }}))
+            });
+            jQuery('#item-create').on('submit', function(event) {
+                event.preventDefault();
+                event.stopPropagation()
+                const data = $('#item-create').serializeArray().reduce(function(obj, item) {
+                    obj[item.name] = item.value;
+                    return obj;
+                }, {});
+                jQuery.ajax(({url: "/web_assignment2/manage/item.php", method: "post", data: JSON.stringify(data), success: function (data){
+                        console.log(data);
+                        location.reload();
+                    }}))
+            });
+        })
+    </script>
+</head>
+<body>
+<div class="container mx-auto my-10">
+    <label>
+        <h1>CREATE ITEM</h1>
+        <form id="item-create" method="post">
+            <label>
+                Name
+                <input name="name" type="text"/>
+            </label>
+            <label>
+                Price
+                <input name="price" type="number"/>
+            </label>
+            <input name="type" type="hidden" value="CREATE"/>
+            <input type="submit">
+        </form>
+    </label>
+</div>
+<div class="container mx-auto my-10">
+    <label>
+        <h1>UPDATE ITEM</h1>
+        <form id="item-update" method="post">
+            <label>
+                ID
+                <input name="id" type="text"/>
+            </label>
+            <label>
+                Name
+                <input name="name" type="text"/>
+            </label>
+            <label>
+                Price
+                <input name="price" type="number"/>
+            </label>
+            <input name="type" type="hidden" value="UPDATE"/>
+            <input type="submit">
+        </form>
+    </label>
+</div>
+<div class="grid grid-cols-5 container mx-auto content-center items-center">
+    <div class="col-span-1">ID</div>
+    <div class="col-span-2">Name</div>
+    <div class="col-span-1">Price</div>
+    <div class="col-span-1">Action</div>
+</div>
+</body>
+</html>

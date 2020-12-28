@@ -32,7 +32,7 @@ function validateRegister($email, $password)
 }
 
 $email = $_POST["email"];
-$password = $_POST["psswrd"];
+$password = $_POST["password"];
 $errMsg = validateRegister($email, $password);
 if ($errMsg->email !== "" || $errMsg->password !== ""){
     $returnData = json_encode((array)$errMsg);

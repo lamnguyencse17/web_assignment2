@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta CONTENT="vi" HTTP-EQUIV="Content-language">
+    <link href="https://theme.hstatic.net/1000075078/1000610097/14/favicon.png?v=620" rel="shortcut icon"
+          type="image/png">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <title>Manage Account</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        const getAccount = function (limit, offset) {
+            jQuery.ajax({
+                url: `/web_assignment2/manage/account.php?limit=${limit}&offset=${offset}`,
+                method: "get",
+                success: function (data) {
+                    const parsedData = JSON.parse(data);
+                    for (let account of parsedData) {
+                        $(document.body).append(`<div class="grid grid-cols-5 container mx-auto content-center items-center">
+    <div class="col-span-1">${account.id}</div>
+    <div class="col-span-2">${account.email}</div>
+    <div class="col-span-2"><button class="deleteButton shadow border border-black" type="button" data-id=${account.id} >Delete</button></div>
+</div>`);
+                    }
+                }
+            })
+        }
+        jQuery(document).ready(function () {
+            let limit = 10;
+            let offset = 0;
+            getAccount(limit, offset);
+            jQuery(document).on('click', '.deleteButton', function(){
+                const id = jQuery(this).data('id');
+                jQuery.ajax(({url: "/web_assignment2/manage/account.php", contentType: "application/json", method: "post", data: JSON.stringify({type: "DELETE", id: id}), success: function (data){
+                    console.log(data);
+                    location.reload();
+                    }}))
+            })
+        })
+    </script>
+</head>
+<body>
+<div class="grid grid-cols-5 container mx-auto content-center items-center">
+    <div class="col-span-1">ID</div>
+    <div class="col-span-2">Email</div>
+    <div class="col-span-2">Action</div>
+</div>
+</body>
+</html>
