@@ -6,6 +6,16 @@ if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: " . $mysqli->connect_error;
     exit();
 }
+
+session_start();
+if (empty($_SESSION['account_id'])){
+    $errMsg = new stdClass();
+    $errMsg->message = "Not logged in";
+    http_response_code(401);
+    echo json_encode($errMsg);
+    return;
+}
+
 $limit = intval($_GET['limit']);
 $offset = intval($_GET['offset']);
 $query = $mysqli->prepare("select quantity, item_id, account_id, quantity, email, name, price, total, transaction_id from transaction_item_account join account a on a.id = transaction_item_account.account_id join item i on i.id = transaction_item_account.item_id join transaction t on t.id = transaction_item_account.transaction_id  LIMIT ? OFFSET ? ");

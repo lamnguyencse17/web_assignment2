@@ -1,10 +1,17 @@
 <?php
 $mysqli = new mysqli("localhost", "root", "", "TCH");
-session_start();
 // Check connection
 if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: " . $mysqli->connect_error;
     exit();
+}
+session_start();
+if (empty($_SESSION['account_id'])){
+    $errMsg = new stdClass();
+    $errMsg->message = "Something went wrong";
+    http_response_code(401);
+    echo json_encode($errMsg);
+    return;
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET'){

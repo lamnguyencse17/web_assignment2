@@ -42,6 +42,15 @@ if ($mysqli->connect_errno) {
     exit();
 }
 
+session_start();
+if (empty($_SESSION['account_id'])){
+    $errMsg = new stdClass();
+    $errMsg->message = "Not logged in";
+    http_response_code(401);
+    echo json_encode($errMsg);
+    return;
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'GET'){
 $limit = intval($_GET['limit']);
 $offset = intval($_GET['offset']);
