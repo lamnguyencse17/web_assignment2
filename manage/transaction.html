@@ -6,15 +6,15 @@
     <link href="https://theme.hstatic.net/1000075078/1000610097/14/favicon.png?v=620" rel="shortcut icon"
           type="image/png">
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-    <title>Manage Account</title>
+    <title>Manage Transaction</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         var limit = 10;
         var offset = 0;
         var isEnd = false;
-        const getAccount = function () {
+        const getTransaction = function () {
             jQuery.ajax({
-                url: `/web_assignment2/manage/account.php?limit=${limit}&offset=${offset}`,
+                url: `/web_assignment2/manage/transaction.php?limit=${limit}&offset=${offset}`,
                 method: "get",
                 success: function (data) {
                     const parsedData = JSON.parse(data);
@@ -22,31 +22,31 @@
                         isEnd = true;
                         alert("KHONG CO THEM DU LIEU MOI")
                     }
+                    const processedData = parsedData.reduce(function (r, a) {
+                        r[a.transaction_id] = r[a.transaction_id] || [];
+                        r[a.transaction_id].push(a);
+                        return r;
+                    }, Object.create(null));
+                    console.log(processedData)
                     let id = offset;
-                    for (let account of parsedData) {
-                        $(document.body).append(`<div class="grid grid-cols-5 container mx-auto content-center items-center" id="${id++}">
-    <div class="col-span-1">${account.id}</div>
-    <div class="col-span-2">${account.email}</div>
-    <div class="col-span-2"><button class="deleteButton shadow border border-black" type="button" data-id=${account.id} >Delete</button></div>
-</div>`);
+                    for (let transaction_id in processedData) {
+                        const transaction = processedData[transaction_id];
+                        let transactionBody = "";
+                        for (let element of transaction){
+                            transactionBody = transactionBody + `<div class="grid grid-cols-3"><div>${element.name}</div><div>${element.price}</div><div>${element.quantity}</div></div>`;
+                        }
+                        $(document.body).append(`<div id="${id++}" class="container mx-auto grid grid-cols-6 items-center content-center text-center"><div class="col-span-1">${transaction_id}</div><div class="col-span-5 grid-rows-${transaction.length}">${transactionBody}</div>`)
                     }
                 }
             })
         }
-        const removeAccount = function (){
+        const removeTransaction = function (){
             for (let id = offset; id < offset+10; id++){
                 jQuery(`#${id}`).remove();
             }
         }
         jQuery(document).ready(function () {
-            getAccount();
-            jQuery(document).on('click', '.deleteButton', function(){
-                const id = jQuery(this).data('id');
-                jQuery.ajax(({url: "/web_assignment2/manage/account.php", contentType: "application/json", method: "post", data: JSON.stringify({type: "DELETE", id: id}), success: function (data){
-                    console.log(data);
-                    location.reload();
-                    }}))
-            })
+            getTransaction();
         })
         jQuery(document).on("click", "#prev", function (){
             if (offset - limit < 0){
@@ -54,18 +54,18 @@
                 return
             }
             isEnd=false;
-            removeAccount();
+            removeTransaction();
             offset = offset - limit;
-            getAccount();
+            getTransaction();
         });
         jQuery(document).on("click", "#next", function (){
             if (isEnd === true){
                 alert("DANG O TRANG CUOI");
                 return
             }
-            removeAccount();
+            removeTransaction();
             offset = offset + limit;
-            getAccount();
+            getTransaction();
         });
     </script>
 </head>
@@ -73,11 +73,6 @@
 <div class="container mx-auto flex flex-row content-center items-center">
     <button id="prev">Previous Page</button>
     <button id="next">Next Page</button>
-</div>
-<div class="grid grid-cols-5 container mx-auto content-center items-center">
-    <div class="col-span-1">ID</div>
-    <div class="col-span-2">Email</div>
-    <div class="col-span-2">Action</div>
 </div>
 </body>
 </html>

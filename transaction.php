@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET'){
 $data[] = json_decode(file_get_contents('php://input'), true);
 $data = $data[0];
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $data["type"] == 'CREATE'){
-//    $accountID = intval($_SESSION['account_id']);
-    $accountID = 1;
+    $accountID = intval($_SESSION['account_id']);
+//    $accountID = 1;
     $items = $data['items'];
     //items: [[item_id, quantity]]
     $total = 0;
