@@ -32,8 +32,8 @@
                 {return;}
                 jQuery.ajax(({url: "login.php", method: "post", data: data, success: function (data){
                     console.log(data);
-                    const message = JSON.parse(data);
-                        alert(message);
+                    const response = JSON.parse(data);
+                        alert(response.message);
                         window.location.href='login.html';
                     }, error: function (err){
                         const response = JSON.parse(err.responseText);
