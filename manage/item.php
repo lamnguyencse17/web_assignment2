@@ -23,6 +23,19 @@ function validateItem ($name, $price){
     return $errMsg;
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    $limit = intval($_GET['limit']);
+    $offset = intval($_GET['offset']);
+    $query = $mysqli->prepare("SELECT * FROM item LIMIT ? OFFSET ?");
+    $query->bind_param('ii', $limit, $offset);
+    $query->execute();
+    $result = $query->get_result();
+    $response = json_encode($result->fetch_all(MYSQLI_ASSOC));
+    echo $response;
+    $query->close();
+    return;
+}
+
 session_start();
 if (empty($_SESSION['account_id'])){
     $errMsg = new stdClass();
@@ -40,18 +53,6 @@ if (!empty($_SESSION['account_id'])){
         echo json_encode($errMsg);
         return;
     };
-}
-
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $limit = intval($_GET['limit']);
-    $offset = intval($_GET['offset']);
-    $query = $mysqli->prepare("SELECT * FROM item LIMIT ? OFFSET ?");
-    $query->bind_param('ii', $limit, $offset);
-    $query->execute();
-    $result = $query->get_result();
-    $response = json_encode($result->fetch_all(MYSQLI_ASSOC));
-    echo $response;
-    $query->close();
 }
 $data = json_decode(file_get_contents('php://input'), true);
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $data["type"] == 'CREATE'){
