@@ -6,67 +6,76 @@
     <link href="https://theme.hstatic.net/1000075078/1000610097/14/favicon.png?v=620" rel="shortcut icon"
           type="image/png">
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-    <title>Manage Transaction</title>
+    <title>Manage Item</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         var limit = 10;
         var offset = 0;
         var isEnd = false;
-        const getTransaction = function () {
+        const getItem = function (limit, offset) {
             jQuery.ajax({
-                url: `/web_assignment2/manage/transaction.php?limit=${limit}&offset=${offset}`,
+                url: `/web_assignment2/manage/item.php?limit=${limit}&offset=${offset}`,
                 method: "get",
                 success: function (data) {
                     const parsedData = JSON.parse(data);
-                    if (parsedData.length === 0){
+                    if (parsedData.length == 0){
                         isEnd = true;
                         alert("KHONG CO THEM DU LIEU MOI")
                     }
-                    const processedData = parsedData.reduce(function (r, a) {
-                        r[a.transaction_id] = r[a.transaction_id] || [];
-                        r[a.transaction_id].push(a);
-                        return r;
-                    }, Object.create(null));
-                    console.log(processedData)
                     let id = offset;
-                    for (let transaction_id in processedData) {
-                        const transaction = processedData[transaction_id];
-                        let transactionBody = "";
-                        for (let element of transaction){
-                            transactionBody = transactionBody + `<div class=" border border-solid grid grid-cols-3"><div>${element.name}</div><div class="border border-solid">${element.price}</div><div class = "border-solid">${element.quantity}</div></div>`;
-                        }
-                        $('#transaction').append(`<div id="${id++}" class="border border-solid container mx-auto grid grid-cols-6 items-center content-center text-center"><div class="border-solid col-span-1">${transaction_id}</div><div class="border-solid col-span-5 grid-rows-${transaction.length}">${transactionBody}</div>`);
+                    for (let item of parsedData) {
+                        jQuery('#item_manage').append(`
+
+                        <tr id="${id++}">
+              <td> 
+                <a href="#">
+                  <p class="mb-2 md:ml-4">${item.id}</p>
+                  <!-- <form action="" method="POST">
+                    <button type="submit" class="text-gray-700 md:ml-4">
+                      <small>(Remove item)</small>
+                    </button>
+                  </form> -->
+                </a>
+              </td>
+              <td class="hidden text-center md:table-cell">
+                <span class="text-sm lg:text-base font-medium">
+                  ${item.name} 
+                </span>
+              </td>
+              <td class="hidden text-center md:table-cell">
+                <span class="text-sm lg:text-base font-medium">
+                  ${item.price} Đ 
+                </span>
+              </td>              
+            </tr>
+
+                        `);
                     }
                 }
             })
         }
-        const removeTransaction = function (){
-            for (let id = offset; id < offset+10; id++){
-                jQuery(`#${id}`).remove();
-            }
-        }
         jQuery(document).ready(function () {
-            getTransaction();
+            getItem(limit, offset);
+            jQuery(document).on("click", "#prev", function (){
+                if (offset - limit < 0){
+                    alert("DANG O TRANG DAU");
+                    return
+                }
+                isEnd=false;
+                removeItem();
+                offset = offset - limit;
+                getItem();
+            });
+            jQuery(document).on("click", "#next", function (){
+                if (isEnd === true){
+                    alert("DANG O TRANG CUOI");
+                    return
+                }
+                removeItem();
+                offset = offset + limit;
+                getItem();
+            });
         })
-        jQuery(document).on("click", "#prev", function (){
-            if (offset - limit < 0){
-                alert("DANG O TRANG DAU");
-                return
-            }
-            isEnd=false;
-            removeTransaction();
-            offset = offset - limit;
-            getTransaction();
-        });
-        jQuery(document).on("click", "#next", function (){
-            if (isEnd === true){
-                alert("DANG O TRANG CUOI");
-                return
-            }
-            removeTransaction();
-            offset = offset + limit;
-            getTransaction();
-        });
     </script>
 </head>
 <body>
@@ -84,26 +93,37 @@
             <div class="lg:text-sm sm:text-3xl lg:flex-grow">
             </div>
         </div>
-    </nav>  
-
-<div class="flex justify-center">
-    <p class="text-5x1">TRANSACTION LIST</p>
-</div>
+    </nav>
+<!-- <div class="container mx-auto my-10"> -->
 
 
-<div class="border border-solid container mx-auto grid grid-cols-6 items-center content-center text-center">
-    <div class="border-solid col-span-1">ID</div>
-    <div class="border-solid col-span-5 grid-rows-${transaction.length}">
-        <div class=" border border-solid grid grid-cols-3"><div>NAME</div><div class="border border-solid">PRICE</div><div class = "border-solid">QUANTITY</div></div>
-    </div>  
-</div>
 
-<div id="transaction"> 
-</div>
-<div class="flex justify-between">
-    <button class="inline-block px-6 py-2 text-xs font-medium leading-6 text-center text-white uppercase transition bg-indigo-500 rounded shadow ripple hover:shadow-lg hover:bg-indigo-600 focus:outline-none" id="prev">Previous page</button>
-    <button class="inline-block px-6 py-2 text-xs font-medium leading-6 text-center text-white uppercase transition bg-indigo-500 rounded shadow ripple hover:shadow-lg hover:bg-indigo-600 focus:outline-none" id="next">Next page</button>
-</div>
+<div class="flex justify-center my-6">
+    <div class="flex flex-col w-full p-8 text-gray-800 bg-white shadow-lg pin-r pin-y md:w-4/5 lg:w-4/5">
+      <div class="flex-1">
+        <table class="w-full text-sm lg:text-base" cellspacing="0">
+          <thead>
+            <tr class="h-12 uppercase">
+              <th class="text-center">ID</th>
+              <th class="hidden text-center md:table-cell">Name</th>
+              <th class="hidden text-center md:table-cell">Price</th>
+            </tr>
+          </thead>
+          <tbody id="item_manage">
+            
+          </tbody>
+        </table>
+        <div class="flex justify-between">
+            <button class="inline-block px-6 py-2 text-xs font-medium leading-6 text-center text-white uppercase transition bg-indigo-500 rounded shadow ripple hover:shadow-lg hover:bg-indigo-600 focus:outline-none" id="prev">Previous page</button>
+            <button class="inline-block px-6 py-2 text-xs font-medium leading-6 text-center text-white uppercase transition bg-indigo-500 rounded shadow ripple hover:shadow-lg hover:bg-indigo-600 focus:outline-none" id="next">Next page</button>
+        </div>
+        <div>
+            
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 </body>
 </html>
