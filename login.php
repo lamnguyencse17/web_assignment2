@@ -64,12 +64,12 @@ if(password_verify($password,$user->password)){
 //     echo $returnData;
 //     return;
 //     echo "<script type='text/javascript'>alert('$returnData->message');</script>";
-//     header("Location: index.html");
+//     header("Location: index.php");
     echo $returnData;
     return;
 //    echo "<script>
 //    alert('$returnData');
-//    window.location.href='index.html';
+//    window.location.href='index.php';
 //    </script>";
 } else{
     http_response_code(400);
