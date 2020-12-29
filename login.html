@@ -6,6 +6,42 @@
     <link rel="shortcut icon" href="https://theme.hstatic.net/1000075078/1000610097/14/favicon.png?v=620" type="image/png">
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <title>LOGIN</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        const validateLogin = function (email, password) {
+            const re = /\S+@\S+\.\S+/;
+            if (!re.test(email)){
+                alert("Invalid Email");
+                return false;
+            }
+            if (password.length < 6 || password.length > 30) {
+                alert("Invalid Password");
+                return false;
+            }
+            return true;
+        }
+        jQuery(document).ready(function(){
+            jQuery('#login').on('submit', function(event) {
+                event.preventDefault();
+                event.stopPropagation()
+                const data = $('#login').serializeArray().reduce(function(obj, item) {
+                    obj[item.name] = item.value;
+                    return obj;
+                }, {});
+                if (!validateLogin(data.email, data.psswrd))
+                {return;}
+                jQuery.ajax(({url: "login.php", method: "post", data: data, success: function (data){
+                    console.log(data);
+                    const message = JSON.parse(data);
+                        alert(message);
+                        window.location.href='login.html';
+                    }, error: function (err){
+                        const response = JSON.parse(err.responseText);
+                        alert(response.message);
+                    }}))
+            });
+        });
+    </script>
 </head>
 <body>
 <nav class="bg-black flex items-center justify-between flex-wrap p-6">
@@ -33,9 +69,9 @@
     </div>
 </nav>
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
-        <form action="login.php" method="POST">
+        <form action="login.php" method="POST" id="login">
         <div class="mb-4">
-          <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
+          <label class="block text-grey-darker text-sm font-bold mb-2" for="email">
             Email
           </label>
           <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" id="email" type="text" name= "email" placeholder="Email">

@@ -11,7 +11,7 @@ function hashPassword($password)
     return password_hash($password, PASSWORD_BCRYPT);
 }
 
-function validateRegister($email, $password)
+function validateLogin($email, $password)
 {
     $errMsg = new stdClass();
     $errMsg->email = "";
@@ -33,42 +33,49 @@ function validateRegister($email, $password)
 
 $email = $_POST["email"];
 $password = $_POST["psswrd"];
-$errMsg = validateRegister($email, $password);
+$errMsg = validateLogin($email, $password);
 if ($errMsg->email !== "" || $errMsg->password !== ""){
+    $errMsg->message = "Check Email and Password again";
     $returnData = json_encode((array)$errMsg);
-    echo "<script>
-    alert('$returnData');
-    window.location.href='login.html';
-    </script>";
+    http_response_code(400);
+    echo $returnData;
+    return;
 }
 $query = $mysqli->prepare("SELECT * FROM account WHERE email=?" );
 $query->bind_param("s",$email);
 $message = $query->execute();
 $res = $query->get_result();
+
 $user = $res->fetch_object();
 $returnData = new stdClass();
+if ($user == null){
+    $returnData->message = "Email does not exist";
+    http_response_code(400);
+    $returnData = json_encode((array)$returnData);
+    echo $returnData;
+    return;
+};
+
 if(password_verify($password,$user->password)){
     $_SESSION['account_id'] = $user->id;
     http_response_code(200);
     $returnData->message = "Login successfully!";
     $returnData = json_encode((array)$returnData);
-    // echo $returnData;
-    // return;
-    // echo "<script type='text/javascript'>alert('$returnData->message');</script>";
-    // header("Location: index.html");
-    echo "<script>
-    alert('$returnData');
-    window.location.href='index.html';
-    </script>";
+//     echo $returnData;
+//     return;
+//     echo "<script type='text/javascript'>alert('$returnData->message');</script>";
+//     header("Location: index.html");
+    echo $returnData;
+    return;
+//    echo "<script>
+//    alert('$returnData');
+//    window.location.href='index.html';
+//    </script>";
 } else{
     http_response_code(400);
     $returnData->message = "Wrong email or password!";
     $returnData = json_encode((array)$returnData);
-    // echo $returnData;
-    // return;
-    echo "<script>
-    alert('$returnData');
-    window.location.href='login.html';
-    </script>";
+     echo $returnData;
+     return;
 }
 ?>

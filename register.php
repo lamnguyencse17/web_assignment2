@@ -39,12 +39,10 @@ $password = $_POST["psswrd"];
 $confirm_password = $_POST["confirm_psswrd"];
 $errMsg = validateRegister($email, $password, $confirm_password);
 if ($errMsg->email !== "" || $errMsg->password !== ""){
+    $errMsg->message = "Check Email and Password again";
     $returnData = json_encode((array)$errMsg);
     http_response_code(400);
-    echo "<script>
-    alert('Check Your Email Or Password');
-    window.location.href='register.html';
-    </script>";
+    echo $returnData;
     return;
 }
 $password=hashPassword($password);
