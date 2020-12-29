@@ -9,14 +9,22 @@
     <title>Manage Account</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        const getAccount = function (limit, offset) {
+        var limit = 10;
+        var offset = 0;
+        var isEnd = false;
+        const getAccount = function () {
             jQuery.ajax({
                 url: `/web_assignment2/manage/account.php?limit=${limit}&offset=${offset}`,
                 method: "get",
                 success: function (data) {
                     const parsedData = JSON.parse(data);
+                    if (parsedData.length == 0){
+                        isEnd = true;
+                        alert("KHONG CO THEM DU LIEU MOI")
+                    }
+                    let id = offset;
                     for (let account of parsedData) {
-                        $(document.body).append(`<div class="grid grid-cols-5 container mx-auto content-center items-center">
+                        $(document.body).append(`<div class="grid grid-cols-5 container mx-auto content-center items-center" id="${id++}">
     <div class="col-span-1">${account.id}</div>
     <div class="col-span-2">${account.email}</div>
     <div class="col-span-2"><button class="deleteButton shadow border border-black" type="button" data-id=${account.id} >Delete</button></div>
@@ -25,10 +33,13 @@
                 }
             })
         }
+        const removeAccount = function (){
+            for (let id = offset; id < offset+10; id++){
+                jQuery(`#${id}`).remove();
+            }
+        }
         jQuery(document).ready(function () {
-            let limit = 10;
-            let offset = 0;
-            getAccount(limit, offset);
+            getAccount();
             jQuery(document).on('click', '.deleteButton', function(){
                 const id = jQuery(this).data('id');
                 jQuery.ajax(({url: "/web_assignment2/manage/account.php", contentType: "application/json", method: "post", data: JSON.stringify({type: "DELETE", id: id}), success: function (data){
@@ -37,9 +48,31 @@
                     }}))
             })
         })
+        jQuery(document).on("click", "#prev", function (){
+            if (offset - limit < 0){
+                alert("DANG O TRANG DAU");
+                return
+            }
+            removeAccount();
+            offset = offset - limit;
+            getAccount();
+        });
+        jQuery(document).on("click", "#next", function (){
+            if (isEnd === true){
+                alert("DANG O TRANG CUOI");
+                return
+            }
+            removeAccount();
+            offset = offset + limit;
+            getAccount();
+        });
     </script>
 </head>
 <body>
+<div class="container mx-auto flex flex-row content-center items-center">
+    <button id="prev">Previous Page</button>
+    <button id="next">Next Page</button>
+</div>
 <div class="grid grid-cols-5 container mx-auto content-center items-center">
     <div class="col-span-1">ID</div>
     <div class="col-span-2">Email</div>

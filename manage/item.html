@@ -9,14 +9,22 @@
     <title>Manage Item</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        var limit = 10;
+        var offset = 0;
+        var isEnd = false;
         const getItem = function (limit, offset) {
             jQuery.ajax({
                 url: `/web_assignment2/manage/item.php?limit=${limit}&offset=${offset}`,
                 method: "get",
                 success: function (data) {
                     const parsedData = JSON.parse(data);
+                    if (parsedData.length == 0){
+                        isEnd = true;
+                        alert("KHONG CO THEM DU LIEU MOI")
+                    }
+                    let id = offset;
                     for (let item of parsedData) {
-                        jQuery(document.body).append(`<div class="grid grid-cols-5 container mx-auto content-center items-center">
+                        jQuery(document.body).append(`<div class="grid grid-cols-5 container mx-auto content-center items-center" id="${id++}">
     <div class="col-span-1">${item.id}</div>
     <div class="col-span-2">${item.name}</div>
     <div class="col-span-1">${item.price}</div>
@@ -26,9 +34,12 @@
                 }
             })
         }
+        const removeItem = function (){
+            for (let id = offset; id < offset+10; id++){
+                jQuery(`#${id}`).remove();
+            }
+        }
         jQuery(document).ready(function () {
-            let limit = 10;
-            let offset = 0;
             getItem(limit, offset);
             jQuery(document).on('click', '.deleteButton', function(){
                 const id = jQuery(this).data('id');
@@ -59,6 +70,24 @@
                         console.log(data);
                         location.reload();
                     }}))
+            });
+            jQuery(document).on("click", "#prev", function (){
+                if (offset - limit < 0){
+                    alert("DANG O TRANG DAU");
+                    return
+                }
+                removeItem();
+                offset = offset - limit;
+                getItem();
+            });
+            jQuery(document).on("click", "#next", function (){
+                if (isEnd === true){
+                    alert("DANG O TRANG CUOI");
+                    return
+                }
+                removeItem();
+                offset = offset + limit;
+                getItem();
             });
         })
     </script>
@@ -101,6 +130,10 @@
             <input type="submit">
         </form>
     </label>
+</div>
+<div class="container mx-auto flex flex-row content-center items-center">
+    <button id="prev">Previous Page</button>
+    <button id="next">Next Page</button>
 </div>
 <div class="grid grid-cols-5 container mx-auto content-center items-center">
     <div class="col-span-1">ID</div>

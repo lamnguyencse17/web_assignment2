@@ -53,12 +53,12 @@ $returnData = new stdClass();
 
 if ($message === true){
     http_response_code(201);
-    $returnData->message = "Successfully registered";
-    $returnData = json_encode((array)$returnData);
+//    $returnData->message = "Successfully registered";
+//    $returnData = json_encode((array)$returnData);
     // echo $returnData;
     // return;
     echo "<script>
-    alert('$returnData');
+    alert('Successfully registered');
     window.location.href='login.html';
     </script>";
 }
