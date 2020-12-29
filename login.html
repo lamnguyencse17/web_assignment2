@@ -34,7 +34,7 @@
                     console.log(data);
                     const response = JSON.parse(data);
                         alert(response.message);
-                        window.location.href='login.html';
+                        window.location.href='index.php';
                     }, error: function (err){
                         const response = JSON.parse(err.responseText);
                         alert(response.message);
