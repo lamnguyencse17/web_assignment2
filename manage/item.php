@@ -40,6 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $data["type"] == 'CREATE'){
     $price = intval($data["price"]);
     $errMsg = new stdClass();
     $errMsg = validateItem($name, $price);
+    if ($errMsg->name !== "" || $errMsg->price !== ""){
+        http_response_code(400);
+        $returnData = json_encode((array)$errMsg);
+        echo $returnData;
+        return;
+    }
     $query = $mysqli->prepare("insert into tch.item(name, price) values (?, ?)") ;
     $query->bind_param("si", $name, $price);
     $message = $query->execute();

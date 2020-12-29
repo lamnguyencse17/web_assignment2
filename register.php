@@ -41,7 +41,7 @@ $errMsg = validateRegister($email, $password, $confirm_password);
 if ($errMsg->email !== "" || $errMsg->password !== ""){
     $returnData = json_encode((array)$errMsg);
     echo "<script>
-    alert('$returnData');
+    alert('Check Your Email Or Password');
     window.location.href='register.html';
     </script>";
 }
