@@ -35,8 +35,11 @@
             <a href="register.html" class="font-extrabold text-lg block mt-4 lg:inline-block lg:mt-0 text-white hover:text-orange-500 mr-4">
                 ĐĂNG KÝ
             </a>
-            <a href="cart.html" class="font-extrabold text-lg block mt-4 lg:inline-block lg:mt-0 text-white hover:text-orange-500">
+            <a href="cart.html" class="font-extrabold text-lg block mt-4 lg:inline-block lg:mt-0 text-white hover:text-orange-500 mr-4">
                 GIỎ HÀNG
+            </a>
+            <a href="manage/index.php" class="font-extrabold text-lg block mt-4 lg:inline-block lg:mt-0 text-white hover:text-orange-500">
+                MANAGEMENT
             </a>
         </div>
     </div>

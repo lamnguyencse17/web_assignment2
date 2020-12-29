@@ -28,7 +28,7 @@
             jQuery(document).on("click", "button", function() {
                 let items = JSON.parse(localStorage.getItem("cart"))
                 jQuery.ajax({
-                    url: `/web_assignment2/transaction.php`,
+                    url: `transaction.php`,
                     method: "post",
                     data: JSON.stringify({type: "CREATE", items: items}),
                     success: function (data) {

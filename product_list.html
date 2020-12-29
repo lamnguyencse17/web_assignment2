@@ -14,7 +14,7 @@
         var isEnd = false;
         const getItem = function () {
             jQuery.ajax({
-                url: `/web_assignment2/manage/item.php?limit=${limit}&offset=${offset}`,
+                url: `manage/item.php?limit=${limit}&offset=${offset}`,
                 method: "get",
                 success: function (data) {
                     const parsedData = JSON.parse(data);
