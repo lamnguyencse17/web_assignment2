@@ -6,6 +6,45 @@
     <link rel="shortcut icon" href="https://theme.hstatic.net/1000075078/1000610097/14/favicon.png?v=620" type="image/png">
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <title>REGISTER</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        const validateRegister = function (email, password, password2) {
+            const re = /\S+@\S+\.\S+/;
+            if (!re.test(email)){
+                alert("Invalid Email");
+                return false;
+            }
+            if (password.length < 2 || password.length > 30) {
+                alert("Invalid Password");
+                return false;
+            }
+            if (password !== password2){
+                alert("Password Not Match");
+                return false;
+            }
+            return true;
+        }
+        jQuery(document).ready(function(){
+            jQuery('#register').on('submit', function(event) {
+                event.preventDefault();
+                event.stopPropagation()
+                const data = $('#register').serializeArray().reduce(function(obj, item) {
+                    obj[item.name] = item.value;
+                    return obj;
+                }, {});
+                if (!validateRegister(data.email, data.psswrd, data.confirm_psswrd))
+                {return;}
+                jQuery.ajax(({url: "register.php", method: "post", data: data, success: function (data){
+                    const message = JSON.parse(data);
+                    alert(message);
+                    window.location.href='login.html';
+                    }, error: function (err){
+                        const response = JSON.parse(err.responseText);
+                        alert(response.message);
+                    }}))
+            });
+        });
+    </script>
 </head>
 <body>
 
@@ -41,7 +80,7 @@
     <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
         <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
             <h1 class="mb-8 text-3xl text-center">Đăng ký</h1>
-            <form action="register.php" method="POST">
+            <form id="register" action="register.php" method="POST" >
                 <input 
                     type="text"
                     class="block border border-grey-light w-full p-3 rounded mb-4"

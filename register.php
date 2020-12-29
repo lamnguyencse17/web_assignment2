@@ -40,10 +40,12 @@ $confirm_password = $_POST["confirm_psswrd"];
 $errMsg = validateRegister($email, $password, $confirm_password);
 if ($errMsg->email !== "" || $errMsg->password !== ""){
     $returnData = json_encode((array)$errMsg);
+    http_response_code(400);
     echo "<script>
     alert('Check Your Email Or Password');
     window.location.href='register.html';
     </script>";
+    return;
 }
 $password=hashPassword($password);
 $query = $mysqli->prepare("insert into tch.account(email, password) values (?, ?)") ;
@@ -53,21 +55,17 @@ $returnData = new stdClass();
 
 if ($message === true){
     http_response_code(201);
-//    $returnData->message = "Successfully registered";
-//    $returnData = json_encode((array)$returnData);
-    // echo $returnData;
-    // return;
-    echo "<script>
-    alert('Successfully registered');
-    window.location.href='login.html';
-    </script>";
+    $returnData->message = "Successfully registered";
+    $returnData = json_encode((array)$returnData);
+    echo $returnData;
+    return;
 }
 http_response_code(400);
 $returnData->message = "Email is duplicated";
 $returnData = json_encode((array)$returnData);
-// echo $returnData;
-// return;
-echo "<script>
-    alert('$returnData');
-    window.location.href='register.html';
-    </script>";
+ echo $returnData;
+ return;
+//echo "<script>
+//    alert('$returnData');
+//    window.location.href='register.html';
+//    </script>";
