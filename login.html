@@ -32,19 +32,29 @@
         </div>
     </div>
 </nav>
-    <h1>LOGIN</h1>
-    <form action="login.php" method="POST">
-        <div class="row">
-            <a>Email: &nbsp;</a>
-            <input class="border border-black" type="text" id="email" name="email">
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+        <form action="login.php" method="POST">
+        <div class="mb-4">
+          <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
+            Email
+          </label>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" id="email" type="text" name= "email" placeholder="Email">
         </div>
-        <div class="row">
-            <a>Password: &nbsp;</a>
-            <input class="border border-black" type="password" id="psswrd" name="psswrd">
+        <div class="mb-6">
+          <label class="block text-grey-darker text-sm font-bold mb-2" for="password">
+            Mật khẩu
+          </label>
+          <input class="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3" id="psswrd" name="psswrd" type="password" placeholder="******************">
+          <p class="text-red text-xs italic">Hãy điền vào mặt khẩu.</p>
         </div>
-        <div class="row">
-            <input type="submit" value="Submit">
+        <div class="flex items-center justify-between">
+          <input class="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded" style="color: black;" type="submit" value="Đăng nhập">
+            
+          <!-- </button> -->
+           <a class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker" href="register.html">
+            Đăng ký ngay!
+          </a> 
         </div>
-    </form>
-    <button onclick="window.location='register.html'">Register! </button>
+        </form>
+    </div>
 </body>

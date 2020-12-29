@@ -11,7 +11,7 @@ function hashPassword($password)
     return password_hash($password, PASSWORD_BCRYPT);
 }
 
-function validateRegister($email, $password)
+function validateRegister($email, $password, $confirm_password)
 {
     $errMsg = new stdClass();
     $errMsg->email = "";
@@ -28,12 +28,16 @@ function validateRegister($email, $password)
     if (strlen($password) > 30){
         $errMsg->password = "Password is too long";
     }
+    if($confirm_password != $password){
+        $errMsg->password = "Confirmed password did not match";
+    }
     return $errMsg;
 }
 
 $email = $_POST["email"];
-$password = $_POST["password"];
-$errMsg = validateRegister($email, $password);
+$password = $_POST["psswrd"];
+$confirm_password = $_POST["confirm_psswrd"];
+$errMsg = validateRegister($email, $password, $confirm_password);
 if ($errMsg->email !== "" || $errMsg->password !== ""){
     $returnData = json_encode((array)$errMsg);
     echo "<script>
