@@ -107,6 +107,7 @@
     $res = $res->fetch_object();
     $name= $res->name;
     $price = $res->price;
+    $query->close();
     echo "<div id=\"name\" class=\"font-bold text-lg sm:text-3xl mb-2 hover:text-orange-500 duration-300 h-32 duration-500\">".$name."&nbsp</div>"; echo "<p id=\"price\" class=\"sm:text-3xl text-lg font-extrabold text-orange-500 mb-2\">".$price. "Đ</p>";
     // End Query
     echo "
@@ -126,12 +127,20 @@
         <p class=\"sm:text-3xl text-lg font-extrabold text-orange-500 mb-2\">CÓ THỂ BẠN THÍCH</p>
     </div>
     <div class=\"container mx-auto\">
-        <div class=\"grid lg:grid-cols-3 sm:grid-cols-1 gap-4 my-10\">
-            <div class=\"max-w rounded overflow-hidden shadow-lg mb-5\">
+        <div class=\"grid lg:grid-cols-3 sm:grid-cols-1 gap-4 my-10\">";
+    $query = $mysqli->prepare("select name, id, price from item order by rand() limit 3");
+    $query->execute();
+    $res = $query->get_result();
+    $res = $res->fetch_all(MYSQLI_ASSOC);
+    foreach ($res as $item){
+        $item_name = $item["name"];
+        $item_id = $item["id"];
+        $item_price = $item["price"];
+        echo "<div class=\"max-w rounded overflow-hidden shadow-lg mb-5\">
                 <img class=\"w-full\" src=\"https://product.hstatic.net/1000075078/product/tra_buoi_5c4c5ce2d4e44042a069ec9011ef1a9f_large.jpg\" alt=\"Sunset in the mountains\">
                 <div class=\"px-6 py-4\">
-                    <div class=\"font-bold text-lg sm:text-3xl mb-2 hover:text-orange-500 duration-300 h-32 duration-500\"><a href=\"trabuoi.html\">TRÀ OOLONG BƯỞI MẬT ONG</a></div>
-                    <p class=\"sm:text-3xl text-lg font-extrabold text-orange-500 mb-2\">50,000 Đ</p>
+                    <div class=\"font-bold text-lg sm:text-3xl mb-2 hover:text-orange-500 duration-300 h-32 duration-500\"><a href=\"product.php?id=$item_id\">$item_name</a></div>
+                    <p class=\"sm:text-3xl text-lg font-extrabold text-orange-500 mb-2\">$item_price Đ</p>
                 </div>
                 <div class=\"px-6 pt-4 pb-2 mb-2\">
                     <div class=\"grid grid-cols-2 gap-4\">
@@ -143,42 +152,9 @@
                         </button>
                     </div>
                 </div>
-            </div>
-            <div class=\"max-w rounded overflow-hidden shadow-lg mb-5\">
-                <img class=\"w-full\" src=\"https://product.hstatic.net/1000075078/product/macca_d56d5ab8dde4455aa7f19d29b5fff763_large.jpg\" alt=\"Sunset in the mountains\">
-                <div class=\"px-6 py-4\">
-                    <div class=\"font-bold sm:text-3xl text-lg mb-2 hover:text-orange-500 duration-300 h-32 duration-500\"><a href=\"trasua.html\">TRÀ SỮA MẮC CA TRÂN CHÂU TRẮNG</a></div>
-                    <p class=\"sm:text-3xl text-lg font-extrabold text-orange-500 mb-2\">45,000 Đ</p>
-                </div>
-                <div class=\"px-6 pt-4 pb-2 mb-2\">
-                    <div class=\"grid grid-cols-2 gap-4\">
-                        <button class=\"border-orange-500 border-2 sm:text-3xl lg:text-2xl transition duration-500 ease-in-out bg-orange-500 bg-orange-500 text-white hover:text-orange-500 hover:bg-white px-3\">
-                            MUA NGAY
-                        </button>
-                        <button class=\"border-orange-500 border-2 sm:text-3xl lg:text-2xl transition duration-500 ease-in-out  bg-white text-orange-500 hover:text-white hover:bg-orange-500 px-3\">
-                            TÌM HIỂU THÊM
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class=\"max-w rounded overflow-hidden shadow-lg mb-5\">
-                <img class=\"w-full\" src=\"https://product.hstatic.net/1000075078/product/tra_dao_5f3925d9bfca4d0abc17f95b05fff5f7_large.jpg\" alt=\"Sunset in the mountains\">
-                <div class=\"px-6 py-4\">
-                    <div class=\"font-bold text-lg sm:text-3xl mb-2 hover:text-orange-500 duration-300 h-32 duration-500\"><a href=\"tradao.html\">TRÀ ĐÀO CAM SẢ</a></div>
-                    <p class=\"sm:text-3xl text-lg font-extrabold text-orange-500 mb-2\">45,000 Đ</p>
-                </div>
-                <div class=\"px-6 pt-4 pb-2 mb-2\">
-                    <div class=\"grid grid-cols-2 gap-4\">
-                        <button class=\"border-orange-500 border-2 sm:text-3xl lg:text-2xl transition duration-500 ease-in-out bg-orange-500 bg-orange-500 text-white hover:text-orange-500 hover:bg-white px-3\">
-                            MUA NGAY
-                        </button>
-                        <button class=\"border-orange-500 border-2 sm:text-3xl lg:text-2xl transition duration-500 ease-in-out  bg-white text-orange-500 hover:text-white hover:bg-orange-500 px-3\">
-                            TÌM HIỂU THÊM
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </div>";
+    }
+        echo "</div>
     </div>
 </div>
 </main>
