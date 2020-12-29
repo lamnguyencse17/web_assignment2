@@ -37,6 +37,9 @@
                         }
                         $('#transaction').append(`<div id="${id++}" class="border border-solid container mx-auto grid grid-cols-6 items-center content-center text-center"><div class="border-solid col-span-1">${transaction_id}</div><div class="border-solid col-span-5 grid-rows-${transaction.length}">${transactionBody}</div>`);
                     }
+                }, error: function (err){
+                    const response = JSON.parse(err.responseText);
+                    alert(response.message);
                 }
             })
         }

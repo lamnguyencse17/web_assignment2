@@ -65,7 +65,10 @@
 
                         `);
                     }
-                }
+                },error: function (err){
+                const response = JSON.parse(err.responseText);
+                alert(response.message);
+            }
             })
         }
         const removeItem = function (){

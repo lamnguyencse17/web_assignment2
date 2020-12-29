@@ -29,6 +29,9 @@
             <a href="transaction.html" class="font-extrabold text-lg block mt-4 lg:inline-block lg:mt-0 text-white hover:text-orange-500 mr-4">
                 TRANSACTION MANAGEMENT
             </a>
+            <a href="logout.php" class="font-extrabold text-lg block mt-4 lg:inline-block lg:mt-0 text-white hover:text-orange-500 mr-4">
+                TRANSACTION MANAGEMENT
+            </a>
         </div>
     </div>
 </nav>

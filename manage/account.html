@@ -17,6 +17,7 @@
                 url: `account.php?limit=${limit}&offset=${offset}`,
                 method: "get",
                 success: function (data) {
+                    console.log(data);
                     const parsedData = JSON.parse(data);
                     if (parsedData.length === 0){
                         isEnd = true;
@@ -59,6 +60,9 @@
 
                         `);
                     }
+                }, error: function (err){
+                    const response = JSON.parse(err.responseText);
+                    alert(response.message);
                 }
             })
         }
